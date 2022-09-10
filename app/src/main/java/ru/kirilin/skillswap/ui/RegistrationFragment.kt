@@ -84,37 +84,28 @@ class RegistrationFragment(var viewModel: RegistrationViewModel) : BaseFragment(
                 18, "MALE",
                 username?.text.toString()
             )
-        var user: User?
-        val call = RetrofitModule.userApi.createUser(persistedUser)
-        call.enqueue(object : Callback<User?> {
-            override fun onResponse(call: Call<User?>, response: Response<User?>) {
-                user = response.body()
-            }
 
-            override fun onFailure(call: Call<User?>, t: Throwable) {
-                Toast.makeText(context, "Cannot send data to server!", Toast.LENGTH_LONG).show()
-            }
-        })
+        try {
+            RetrofitModule.userApi.createUser(persistedUser)
+        } catch (ex: Throwable) {
+            Toast.makeText(context, "Cannot send data to server!", Toast.LENGTH_LONG).show()
+            Log.e(TAG, "Cannot send data to server!", ex)
+            return
+        }
+//        call.enqueue(object : Callback<User?> {
+//            override fun onResponse(call: Call<User?>, response: Response<User?>) {
+//                user = response.body()
+//            }
+//
+//            override fun onFailure(call: Call<User?>, t: Throwable) {
+//                Toast.makeText(context, "Cannot send data to server!", Toast.LENGTH_LONG).show()
+//                return
+//            }
+//        })
 
         val activity = activity as MainActivity
         activity.startMainFragment()
     }
-
-
-    // TODO 06: Add interceptor to your Okhttp client
-//    private class CatsApiHeaderInterceptor : Interceptor {
-//        override fun intercept(chain: Interceptor.Chain): Response {
-//            val originalRequest = chain.request()
-//            val originalHttpUrl = originalRequest.url
-//
-//            val request = originalRequest.newBuilder()
-//                .url(originalHttpUrl)
-//                // TODO 05: Add header API_KEY_HEADER with your Api Key to request builder
-//                .build()
-//
-//            return chain.proceed(request)
-//        }
-//    }
 
 
     companion object {

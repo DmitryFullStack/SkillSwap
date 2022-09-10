@@ -9,7 +9,7 @@ import java.util.*
 
 interface UserApi {
     @POST("/v1/users")
-    fun createUser(@Body user: User): Call<User>
+    fun createUser(@Body user: User): User
 
     @GET("/v1/user/{id}")
     fun getUserById(@Path("id") id: UUID): User
