@@ -82,7 +82,8 @@ class RegistrationFragment(var viewModel: RegistrationViewModel) : BaseFragment(
             val persistedUser = User(
                 username?.text.toString(),
                 18, "MALE",
-                username?.text.toString()
+                username?.text.toString(),
+                null
             )
 
         try {
@@ -104,7 +105,7 @@ class RegistrationFragment(var viewModel: RegistrationViewModel) : BaseFragment(
 //        })
 
         val activity = activity as MainActivity
-        activity.startMainFragment()
+//        activity.startMainFragment()
     }
 
 

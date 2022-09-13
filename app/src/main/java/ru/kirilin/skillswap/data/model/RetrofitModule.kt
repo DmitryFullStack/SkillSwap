@@ -1,6 +1,7 @@
 package ru.kirilin.skillswap.data.model
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.fasterxml.jackson.databind.DeserializationFeature
+import retrofit2.converter.jackson.JacksonConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -11,7 +12,13 @@ import ru.kirilin.skillswap.ui.BaseFragment
 object RetrofitModule {
     private val json = Json {
         ignoreUnknownKeys = true
+        isLenient = true
+        prettyPrint = true
+        encodeDefaults = true
     }
+
+    val jsonMapper = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
     private val client = OkHttpClient().newBuilder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -21,7 +28,7 @@ object RetrofitModule {
     private val retrofit: Retrofit = Retrofit.Builder()
         .client(client)
         .baseUrl(BaseFragment.getBaseUrl())
-        .addConverterFactory(json.asConverterFactory("application/hal+json".toMediaType()))
+        .addConverterFactory(JacksonConverterFactory.create(jsonMapper))
         .build()
 
     val userApi: UserApi = retrofit.create(UserApi::class.java)

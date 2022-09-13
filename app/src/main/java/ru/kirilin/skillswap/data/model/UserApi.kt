@@ -1,16 +1,16 @@
 package ru.kirilin.skillswap.data.model
 
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 import java.util.*
 
 interface UserApi {
     @POST("/v1/users")
     fun createUser(@Body user: User): User
 
-    @GET("/v1/user/{id}")
-    fun getUserById(@Path("id") id: UUID): User
+    @POST("/v1/users")
+    suspend fun createNewUser(@Body user: User): User
+
+    @GET("/v1/users/{id}")
+    suspend fun getUserById(@Path("id") id: String, @Query("accountType") accountType: String = "GOOGLE"): User?
 }
