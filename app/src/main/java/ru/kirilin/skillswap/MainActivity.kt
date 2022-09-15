@@ -11,7 +11,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.runBlocking
@@ -20,15 +19,15 @@ import ru.kirilin.skillswap.data.model.RetrofitModule
 import ru.kirilin.skillswap.data.model.User
 import ru.kirilin.skillswap.data.model.UserId
 import ru.kirilin.skillswap.ui.MainFragment
-import ru.kirilin.skillswap.ui.RegistrationFragment
+import ru.kirilin.skillswap.ui.SignInFragment
+import ru.kirilin.skillswap.ui.SignInFragment.Companion.RC_SIGN_IN
 import ru.kirilin.skillswap.ui.viewmodel.MainViewModel
 import ru.kirilin.skillswap.ui.viewmodel.MainViewModelFactory
-import ru.kirilin.skillswap.ui.viewmodel.RegistrationViewModel
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener{
 
-    private val RC_SIGN_IN = 9001
+
     private val TAG = "Oauth2Google"
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -42,23 +41,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if(account != null){
-            val user = runBlocking { try {
-                    RetrofitModule.userApi.getUserById(account.id.toString())
-                } catch (throwable: HttpException){
-                    return@runBlocking if(throwable.code() == 404){
-                        RetrofitModule.userApi.createNewUser(createUserFromAccount(account))
-                    }else{
-                        finish()
-                    }
-                }} as User
+            val user = tryToFetchUser(account)
             startMainFragment(user)
         }else{
-            val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-            signInButton.setSize(SignInButton.SIZE_STANDARD)
-            signInButton.setOnClickListener(this)
+            startFragment(SignInFragment(mGoogleSignInClient))
         }
 //        var viewModel: RegistrationViewModel = ViewModelProvider(this).get(RegistrationViewModel::class.java)
 //        startFragment(RegistrationFragment(viewModel))
+    }
+
+    private fun tryToFetchUser(account: GoogleSignInAccount): User {
+        return runBlocking {
+            try {
+                RetrofitModule.userApi.getUserById(account.id.toString())
+            } catch (throwable: HttpException) {
+                return@runBlocking if (throwable.code() == 404) {
+                    RetrofitModule.userApi.createNewUser(createUserFromAccount(account))
+                } else {
+                    finish()
+                }
+            }
+        } as User
     }
 
     private fun createUserFromAccount(account: GoogleSignInAccount) =
@@ -68,16 +71,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
             id = UserId(accountNumber = account.id!!)
         )
 
-    private fun startFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment, fragment::class.java.simpleName)
-            .commit()
-    }
-
     fun startMainFragment(user: User) {
         val viewModel = ViewModelProvider(this, MainViewModelFactory(user))
             .get(MainViewModel::class.java)
         startFragment(MainFragment(viewModel))
+    }
+
+    private fun startFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment, fragment::class.java.simpleName)
+            .commit()
     }
 
     override fun onClick(view: View?) {
