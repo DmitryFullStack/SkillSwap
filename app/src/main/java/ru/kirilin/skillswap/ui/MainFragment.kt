@@ -7,12 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.isActive
 import ru.kirilin.skillswap.R
+import ru.kirilin.skillswap.ui.adapter.SkillAdapter
 import ru.kirilin.skillswap.ui.viewmodel.MainViewModel
+import ru.kirilin.skillswap.ui.viewmodel.RegistrationViewModel
+import ru.kirilin.skillswap.ui.viewmodel.SkillViewModel
+import ru.kirilin.skillswap.ui.viewmodel.SkillViewModelFactory
 
-class MainFragment(val viewModel: MainViewModel) : BaseFragment() {
+class MainFragment(
+    val mainViewModel: MainViewModel,
+    val accountId: String,
+    ) : BaseFragment() {
 
     lateinit var username: TextView
     lateinit var login: TextView
@@ -20,6 +28,8 @@ class MainFragment(val viewModel: MainViewModel) : BaseFragment() {
     lateinit var requirements: Button
     lateinit var skills: Button
     lateinit var search: Button
+    lateinit var addSkillBtn: Button
+    lateinit var addReqBtn: Button
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e(TAG, "Coroutine exception, scope active:${coroutineScope.isActive}", throwable)
@@ -40,13 +50,27 @@ class MainFragment(val viewModel: MainViewModel) : BaseFragment() {
         requirements = view.findViewById(R.id.myRequirements)
         skills = view.findViewById(R.id.mySkills)
         search = view.findViewById(R.id.comradeSearch)
+        addSkillBtn = view.findViewById(R.id.addSkillBtn)
+        addReqBtn = view.findViewById(R.id.addReqBtn)
 
-        viewModel.registrationState.observe(viewLifecycleOwner){
+        val skillAdapter = SkillAdapter()
+        val viewModel: SkillViewModel = ViewModelProvider(this, SkillViewModelFactory(accountId))
+            .get(SkillViewModel::class.java)
+        viewModel.skillData.observe(this.viewLifecycleOwner){
+            skillAdapter.skills = viewModel.skillData.value!!
+        }
+
+        mainViewModel.registrationState.observe(viewLifecycleOwner){
             username.text = it.login
             login.text = it.login
             age.text = it.age.toString()
         }
 
+        addSkillBtn.setOnClickListener{
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.container, SkillEditFragment(), SkillEditFragment::class.java.simpleName)
+                ?.commit()
+        }
     }
 
     companion object {

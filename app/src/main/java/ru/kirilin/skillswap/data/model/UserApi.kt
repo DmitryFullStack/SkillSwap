@@ -1,8 +1,6 @@
 package ru.kirilin.skillswap.data.model
 
-import retrofit2.Call
 import retrofit2.http.*
-import java.util.*
 
 interface UserApi {
     @POST("/v1/users")

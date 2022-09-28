@@ -8,22 +8,22 @@
     >
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/skill_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/level"
+        app:layout_constraintBottom_toTopOf="@+id/skill_item_level"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Math"
         />
 
     <TextView
-        android:id="@+id/level"
+        android:id="@+id/skill_item_level"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/skill_item_title"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

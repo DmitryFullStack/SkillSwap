@@ -9,3 +9,9 @@ class MainViewModelFactory(val user: User) : ViewModelProvider.Factory{
         return MainViewModel(user) as T;
     }
 }
+
+class SkillViewModelFactory(val accountId: String) : ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return SkillViewModel(accountId) as T;
+    }
+}

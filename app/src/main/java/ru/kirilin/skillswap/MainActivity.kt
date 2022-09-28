@@ -11,7 +11,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
@@ -35,14 +37,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val serverClientId = R.string.server_client_id.toString()
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestScopes(Scope(Scopes.DRIVE_APPFOLDER))
+            .requestServerAuthCode(serverClientId)
             .requestEmail()
             .build()
+
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if(account != null){
             val user = tryToFetchUser(account)
-            startMainFragment(user)
+                .also {
+                    it.id = UserId(account.id.toString(), "GOOGLE")
+                }
+            startMainFragment(user, account.id!!)
         }else{
             startFragment(SignInFragment(mGoogleSignInClient))
         }
@@ -71,10 +80,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
             id = UserId(accountNumber = account.id!!)
         )
 
-    fun startMainFragment(user: User) {
+    fun startMainFragment(user: User, accountId: String) {
         val viewModel = ViewModelProvider(this, MainViewModelFactory(user))
             .get(MainViewModel::class.java)
-        startFragment(MainFragment(viewModel))
+        startFragment(MainFragment(viewModel, accountId))
     }
 
     private fun startFragment(fragment: Fragment) {
@@ -109,7 +118,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
             val account = completedTask.getResult(ApiException::class.java)
             val user = runBlocking { RetrofitModule.userApi.createNewUser(createUserFromAccount(account))}
             // Signed in successfully, show authenticated UI.
-            startMainFragment(user)
+            startMainFragment(user, account.id!!)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.

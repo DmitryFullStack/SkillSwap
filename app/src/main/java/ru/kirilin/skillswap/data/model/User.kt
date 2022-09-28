@@ -9,11 +9,11 @@ data class User(
     val gender: String? = null,
     val name: String?,
     val logo: String? = null,
-    val id: UserId? = null
+    var id: UserId? = null
 )
 
 @Serializable
 data class UserId (
-    val accountNumber: String,
-    val accountType: String = "GOOGLE"
+    var accountNumber: String,
+    var accountType: String = "GOOGLE"
 )

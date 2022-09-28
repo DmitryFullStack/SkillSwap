@@ -32,4 +32,18 @@ object RetrofitModule {
         .build()
 
     val userApi: UserApi = retrofit.create(UserApi::class.java)
+    val skillApi: SkillApi = retrofit.create(SkillApi::class.java)
+
+//    fun create(userToken: String? = null): Retrofit{
+//        if(retrofitInstance == null){
+//            clientBuilder.addInterceptor {chain ->
+//                val request = chain.request().newBuilder()
+//                    .addHeader("Authorization", "Bearer $userToken")
+//                    .build()
+//                return@addInterceptor chain.proceed(request)
+//            }
+//            retrofitInstance = builder.client(clientBuilder.build()).build()
+//        }
+//        return retrofitInstance!!
+//    }
 }
