@@ -1,4 +1,4 @@
-package ru.kirilin.skillswap.ui
+package ru.kirilin.skillswap.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -12,12 +12,9 @@ import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.isActive
-import retrofit2.Call
 import ru.kirilin.skillswap.R
 import ru.kirilin.skillswap.data.model.RetrofitModule
 import ru.kirilin.skillswap.data.model.User
-import retrofit2.Callback
-import retrofit2.Response
 import ru.kirilin.skillswap.MainActivity
 import ru.kirilin.skillswap.ui.viewmodel.RegistrationViewModel
 

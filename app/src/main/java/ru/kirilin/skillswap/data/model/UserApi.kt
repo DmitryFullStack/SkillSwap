@@ -10,5 +10,8 @@ interface UserApi {
     suspend fun createNewUser(@Body user: User): User
 
     @GET("/v1/users/{id}")
-    suspend fun getUserById(@Path("id") id: String, @Query("accountType") accountType: String = "GOOGLE"): User?
+    suspend fun getUserById(
+        @Path("id") id: String,
+        @Query("accountType"
+        ) accountType: String = "GOOGLE"): User?
 }

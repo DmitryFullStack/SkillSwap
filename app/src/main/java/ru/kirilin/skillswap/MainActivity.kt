@@ -20,9 +20,9 @@ import retrofit2.HttpException
 import ru.kirilin.skillswap.data.model.RetrofitModule
 import ru.kirilin.skillswap.data.model.User
 import ru.kirilin.skillswap.data.model.UserId
-import ru.kirilin.skillswap.ui.MainFragment
-import ru.kirilin.skillswap.ui.SignInFragment
-import ru.kirilin.skillswap.ui.SignInFragment.Companion.RC_SIGN_IN
+import ru.kirilin.skillswap.ui.fragment.MainFragment
+import ru.kirilin.skillswap.ui.fragment.SignInFragment
+import ru.kirilin.skillswap.ui.fragment.SignInFragment.Companion.RC_SIGN_IN
 import ru.kirilin.skillswap.ui.viewmodel.MainViewModel
 import ru.kirilin.skillswap.ui.viewmodel.MainViewModelFactory
 

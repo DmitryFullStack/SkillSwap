@@ -1,0 +1,51 @@
+package ru.kirilin.skillswap.ui.fragment
+
+import android.content.Context
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import kotlinx.coroutines.*
+import retrofit2.HttpException
+
+open class BaseFragment : Fragment() {
+	
+	var coroutineScope = createCoroutineScope()
+	
+	override fun onDetach() {
+		coroutineScope.cancel("It's time")
+		
+		super.onDetach()
+	}
+
+	companion object{
+		fun getBaseUrl(): String = "http://10.0.2.2:9090"
+	}
+
+	fun getApiKey(): String = apiKey
+	
+	fun createCoroutineScope() = CoroutineScope(Job() + Dispatchers.IO)
+
+	val coroutineExceptionHandler = CoroutineExceptionHandler{_, throwable ->
+		throwable.printStackTrace()
+		activity?.runOnUiThread{showToast(throwable.message ?: "Unknown Error")}
+
+	}
+
+	suspend fun <T: Any> handleRequest(requestFunc: suspend () -> T) {
+		withContext(Dispatchers.IO){
+			kotlin.runCatching { requestFunc.invoke() }
+				.onFailure { er ->
+					er.printStackTrace()
+					showToast(er.message ?: "Unknown Error")
+				}
+		}
+	}
+
+	fun showToast(
+		message: String,
+		context: Context = activity?.applicationContext!!,
+		duration: Int = Toast.LENGTH_LONG) {
+		Toast.makeText(context, message, duration).show()
+	}
+}
+
+const val apiKey = "753009e5-1ad5-44dc-9cc0-ae43b4c6f8ce"

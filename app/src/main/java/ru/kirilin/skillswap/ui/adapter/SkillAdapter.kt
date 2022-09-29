@@ -36,7 +36,12 @@ class SkillViewHolder(item: View) : RecyclerView.ViewHolder(item) {
     fun onBind(skill: Skill) {
         title.text = skill.name
         level.text = skill.level?.name
-        price.text = skill.price.toString()
+        experience.text = skill.experience?.toString()
+        skill.price.takeIf { it != null }
+            .apply {
+                price.visibility = View.VISIBLE
+                price.text = skill.price.toString()
+            }
     }
 
     internal class SkillItemCallback : DiffUtil.ItemCallback<Skill>() {

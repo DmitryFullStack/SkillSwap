@@ -12,6 +12,7 @@ data class Skill (
     val id: UUID? = null,
     val user: User? = null,
     val name: String? = null,
+    val experience: Int? = null,
     val level: Level? = null,
     @Serializable(with = BigDecimalSerializer::class)
     val price: BigDecimal? = null

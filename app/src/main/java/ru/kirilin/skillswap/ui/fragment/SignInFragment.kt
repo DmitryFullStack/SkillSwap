@@ -1,4 +1,4 @@
-package ru.kirilin.skillswap.ui
+package ru.kirilin.skillswap.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle

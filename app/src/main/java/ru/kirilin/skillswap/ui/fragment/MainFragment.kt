@@ -1,4 +1,4 @@
-package ru.kirilin.skillswap.ui
+package ru.kirilin.skillswap.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.isActive
 import ru.kirilin.skillswap.R
 import ru.kirilin.skillswap.ui.adapter.SkillAdapter
 import ru.kirilin.skillswap.ui.viewmodel.MainViewModel
-import ru.kirilin.skillswap.ui.viewmodel.RegistrationViewModel
 import ru.kirilin.skillswap.ui.viewmodel.SkillViewModel
 import ru.kirilin.skillswap.ui.viewmodel.SkillViewModelFactory
 
@@ -53,12 +55,9 @@ class MainFragment(
         addSkillBtn = view.findViewById(R.id.addSkillBtn)
         addReqBtn = view.findViewById(R.id.addReqBtn)
 
-        val skillAdapter = SkillAdapter()
-        val viewModel: SkillViewModel = ViewModelProvider(this, SkillViewModelFactory(accountId))
-            .get(SkillViewModel::class.java)
-        viewModel.skillData.observe(this.viewLifecycleOwner){
-            skillAdapter.skills = viewModel.skillData.value!!
-        }
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_skills)
+
+        setSkillAdapter(recyclerView)
 
         mainViewModel.registrationState.observe(viewLifecycleOwner){
             username.text = it.login
@@ -71,6 +70,22 @@ class MainFragment(
                 ?.replace(R.id.container, SkillEditFragment(), SkillEditFragment::class.java.simpleName)
                 ?.commit()
         }
+    }
+
+    private fun setSkillAdapter(recyclerView: RecyclerView) {
+        val skillAdapter = SkillAdapter()
+        val skillViewModel = ViewModelProvider(this, SkillViewModelFactory(accountId))
+            .get(SkillViewModel::class.java)
+        skillViewModel.skillData.observe(this.viewLifecycleOwner) {
+            skillAdapter.skills = skillViewModel.skillData.value!!
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(this.context,
+            RecyclerView.VERTICAL, false)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+
+        recyclerView.adapter = skillAdapter
     }
 
     companion object {

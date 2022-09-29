@@ -1,4 +1,4 @@
-package ru.kirilin.skillswap.ui
+package ru.kirilin.skillswap.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.util.toRange
 import androidx.fragment.app.activityViewModels
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.kirilin.skillswap.R
 import ru.kirilin.skillswap.data.model.Level
@@ -49,8 +49,7 @@ class SkillEditFragment : BaseFragment(){
 
     private fun addSkill() {
         require(title?.text.toString().isNotBlank()) { showToast(message = "Fill title field!") }
-        coroutineScope.launch {
-            RetrofitModule.skillApi.createNewSkill(
+        coroutineScope.launch (coroutineExceptionHandler){RetrofitModule.skillApi.createNewSkill(
                 Skill(
                     name = title?.text.toString(),
                     level = Level.valueOf(level?.selectedItem.toString()),
@@ -73,10 +72,4 @@ class SkillEditFragment : BaseFragment(){
                 }
             }
 
-    private fun showToast(
-        message: String,
-        context: Context = activity?.applicationContext!!,
-        duration: Int = Toast.LENGTH_LONG) {
-        Toast.makeText(context, message, duration).show()
-    }
 }
