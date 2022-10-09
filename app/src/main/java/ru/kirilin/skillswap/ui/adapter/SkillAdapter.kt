@@ -12,7 +12,6 @@ import ru.kirilin.skillswap.data.model.Skill
 
 class SkillAdapter : ListAdapter<Skill, SkillViewHolder>(SkillViewHolder.SkillItemCallback()) {
 
-    var skills = listOf<Skill>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SkillViewHolder {
         val view: View = LayoutInflater.from(parent.context)
@@ -21,10 +20,9 @@ class SkillAdapter : ListAdapter<Skill, SkillViewHolder>(SkillViewHolder.SkillIt
     }
 
     override fun onBindViewHolder(holder: SkillViewHolder, position: Int) {
-        holder.onBind(skills[position])
+        val item = getItem(position)
+        holder.onBind(item)
     }
-
-    override fun getItemCount() = skills.size
 }
 
 class SkillViewHolder(item: View) : RecyclerView.ViewHolder(item) {

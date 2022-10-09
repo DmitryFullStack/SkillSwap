@@ -33,6 +33,9 @@ class MainFragment(
     lateinit var addSkillBtn: Button
     lateinit var addReqBtn: Button
 
+    lateinit var skillViewModel: SkillViewModel
+    lateinit var skillAdapter: SkillAdapter
+
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e(TAG, "Coroutine exception, scope active:${coroutineScope.isActive}", throwable)
         coroutineScope = createCoroutineScope()
@@ -68,16 +71,22 @@ class MainFragment(
         addSkillBtn.setOnClickListener{
             activity?.supportFragmentManager?.beginTransaction()
                 ?.replace(R.id.container, SkillEditFragment(), SkillEditFragment::class.java.simpleName)
+                ?.addToBackStack("")
                 ?.commit()
         }
     }
 
+    override fun onResume() {
+        skillViewModel.refresh()
+        super.onResume()
+    }
+
     private fun setSkillAdapter(recyclerView: RecyclerView) {
-        val skillAdapter = SkillAdapter()
-        val skillViewModel = ViewModelProvider(this, SkillViewModelFactory(accountId))
+        skillAdapter = SkillAdapter()
+        skillViewModel = ViewModelProvider(this, SkillViewModelFactory(accountId))
             .get(SkillViewModel::class.java)
         skillViewModel.skillData.observe(this.viewLifecycleOwner) {
-            skillAdapter.skills = skillViewModel.skillData.value!!
+            skillAdapter.submitList(skillViewModel.skillData.value!!)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this.context,
