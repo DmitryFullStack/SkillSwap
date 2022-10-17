@@ -32,6 +32,7 @@ object RetrofitModule {
 
     val userApi: UserApi = retrofit.create(UserApi::class.java)
     val skillApi: SkillApi = retrofit.create(SkillApi::class.java)
+    val requirementApi: RequirementApi = retrofit.create(RequirementApi::class.java)
 
 //    fun create(userToken: String? = null): Retrofit{
 //        if(retrofitInstance == null){

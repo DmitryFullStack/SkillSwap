@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.isActive
 import ru.kirilin.skillswap.R
+import ru.kirilin.skillswap.ui.adapter.RequirementAdapter
 import ru.kirilin.skillswap.ui.adapter.SkillAdapter
-import ru.kirilin.skillswap.ui.viewmodel.MainViewModel
-import ru.kirilin.skillswap.ui.viewmodel.SkillViewModel
-import ru.kirilin.skillswap.ui.viewmodel.SkillViewModelFactory
+import ru.kirilin.skillswap.ui.viewmodel.*
 
 class MainFragment(
     val mainViewModel: MainViewModel,
@@ -35,6 +34,9 @@ class MainFragment(
 
     lateinit var skillViewModel: SkillViewModel
     lateinit var skillAdapter: SkillAdapter
+
+    lateinit var requirementVM: RequirementViewModel
+    lateinit var requirementAdapter: RequirementAdapter
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e(TAG, "Coroutine exception, scope active:${coroutineScope.isActive}", throwable)
@@ -58,9 +60,11 @@ class MainFragment(
         addSkillBtn = view.findViewById(R.id.addSkillBtn)
         addReqBtn = view.findViewById(R.id.addReqBtn)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_skills)
+        val skillRecyclerView = view.findViewById<RecyclerView>(R.id.rv_skills)
+        val requirementRecyclerView = view.findViewById<RecyclerView>(R.id.rv_requirements)
 
-        setSkillAdapter(recyclerView)
+        setSkillAdapter(skillRecyclerView)
+        setRequirementAdapter(requirementRecyclerView)
 
         mainViewModel.registrationState.observe(viewLifecycleOwner){
             username.text = it.login
@@ -74,10 +78,18 @@ class MainFragment(
                 ?.addToBackStack("")
                 ?.commit()
         }
+
+        addReqBtn.setOnClickListener{
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.container, RequirementEditFragment(), RequirementEditFragment::class.java.simpleName)
+                ?.addToBackStack("")
+                ?.commit()
+        }
     }
 
     override fun onResume() {
         skillViewModel.refresh()
+        requirementVM.refresh()
         super.onResume()
     }
 
@@ -95,6 +107,22 @@ class MainFragment(
             DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
 
         recyclerView.adapter = skillAdapter
+    }
+
+    private fun setRequirementAdapter(recyclerView: RecyclerView) {
+        requirementAdapter = RequirementAdapter()
+        requirementVM = ViewModelProvider(this, RequirementViewModelFactory(accountId))
+            .get(RequirementViewModel::class.java)
+        requirementVM.requirementData.observe(this.viewLifecycleOwner) {
+            requirementAdapter.submitList(requirementVM.requirementData.value!!)
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(this.context,
+            RecyclerView.VERTICAL, false)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+
+        recyclerView.adapter = requirementAdapter
     }
 
     companion object {

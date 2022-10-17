@@ -8,26 +8,38 @@
     >
 
     <TextView
-        android:id="@+id/skill_item_title"
-        android:layout_width="match_parent"
+        android:id="@+id/req_item_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/skill_item_level"
+        app:layout_constraintBottom_toTopOf="@+id/req_item_minExperience"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="0.5"
         tools:text="Math"
         />
 
     <TextView
-        android:id="@+id/skill_item_level"
+        android:id="@+id/req_item_minExperience"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/skill_item_title"
-        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/req_item_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
         tools:text="MEDIUM"
         />
+
+    <ImageView
+        android:id="@+id/req_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/trash"
+        android:paddingRight="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,13 +3,14 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_skill_title">Skill</string>
+    <string name="prompt_req_title">Requirement</string>
     <string name="prompt_password">Password</string>
     <string name="level">Choose level</string>
     <string name="experience">Choose period</string>
     <string name="hintExperience">Your experience</string>
     <string name="hintLevel">Your level</string>
     <string name="confirmation">Password confirmation</string>
-    <string name="enter_price">Price</string>
+    <string name="enter_description">Description</string>
     <string name="action_Register">Register</string>
     <string name="action_sign_in">Sign in</string>
     <string name="welcome">"Welcome !"</string>
@@ -23,4 +24,5 @@
     <string name="Requirements">requirements</string>
 
     <string name="server_client_id">450289473746-62pu6orgg63g8s8ipr18imiosull2js6.apps.googleusercontent.com</string>
+    <string name="enter_price">price</string>
 </resources>

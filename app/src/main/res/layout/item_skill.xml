@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/skill_item_price"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/skill_delete"
         app:layout_constraintStart_toEndOf="@id/skill_item_title"
         app:layout_constraintHorizontal_weight="1"
         tools:text="5 years"
@@ -50,11 +50,21 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/skill_item_experience"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/skill_delete"
         app:layout_constraintStart_toEndOf="@id/skill_item_level"
         tools:text="100 $$ in hour"
         android:visibility="invisible"
         app:layout_constraintHorizontal_weight="1"
         />
 
+    <ImageView
+        android:id="@+id/skill_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/trash"
+        android:paddingRight="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

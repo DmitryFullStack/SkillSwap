@@ -1,6 +1,10 @@
 package ru.kirilin.skillswap.ui.fragment
 
+import android.R
 import android.content.Context
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.*
@@ -46,6 +50,18 @@ open class BaseFragment : Fragment() {
 		duration: Int = Toast.LENGTH_LONG) {
 		Toast.makeText(context, message, duration).show()
 	}
+
+	fun <T> setSpinnerAdapter(view: View, spinnerId: Int, objects: List<T>) =
+		view.findViewById<Spinner?>(spinnerId)
+			.also {
+				it.adapter = ArrayAdapter(
+					this.requireContext(),
+					R.layout.simple_spinner_item,
+					objects
+				).also { adapter ->
+					adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+				}
+			}
 }
 
 const val apiKey = "753009e5-1ad5-44dc-9cc0-ae43b4c6f8ce"

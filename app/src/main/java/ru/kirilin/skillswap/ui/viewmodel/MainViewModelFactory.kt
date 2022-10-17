@@ -15,3 +15,9 @@ class SkillViewModelFactory(val accountId: String) : ViewModelProvider.Factory{
         return SkillViewModel(accountId) as T;
     }
 }
+
+class RequirementViewModelFactory(val accountId: String) : ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return RequirementViewModel(accountId) as T;
+    }
+}
