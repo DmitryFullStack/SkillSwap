@@ -16,6 +16,11 @@ interface SkillApi {
         @Query("id") id: String,
         @Query("accountType") accountType: String = "GOOGLE"): List<Skill>
 
+    @PUT("/v1/skills/{id}")
+    suspend fun updateSkill(
+        @Body skill: Skill,
+        @Path("id") id: UUID): Skill
+
 //    @GET("/v1/skills/{id}")
 //    suspend fun getSkillById(@Path("id") id: UUID): Skill?
 }

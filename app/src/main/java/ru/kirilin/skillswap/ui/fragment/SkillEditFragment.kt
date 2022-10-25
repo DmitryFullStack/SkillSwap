@@ -18,7 +18,7 @@ import ru.kirilin.skillswap.ui.viewmodel.MainViewModel
 import java.math.BigDecimal
 
 
-class SkillEditFragment : BaseFragment() {
+class SkillEditFragment(var skill: Skill? = null) : BaseFragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
     var title: EditText? = null
@@ -40,12 +40,25 @@ class SkillEditFragment : BaseFragment() {
         experience = setSpinnerAdapter(view, R.id.experience_spinner, (1..25).toList())
 
         price = view.findViewById(R.id.skill_edit_price)
-        addBtn = view.findViewById<Button?>(R.id.add_skill_btn)
-        addBtn?.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                addSkill()
+        addBtn = view.findViewById(R.id.add_skill_btn)
+
+        fillWhenEditing()
+
+        addBtn?.setOnClickListener {
+            when {
+                skill == null -> addSkill()
+                else -> editSkill(skill!!)
             }
-        })
+        }
+    }
+
+    private fun fillWhenEditing() {
+        if (skill != null) {
+            title?.setText(skill?.name)
+            level?.setSelection(skill?.level?.ordinal ?: 0)
+            experience?.setSelection(skill?.experience ?: 0)
+            price?.setText(skill?.price.toString())
+        }
     }
 
     private fun addSkill() {
@@ -59,6 +72,26 @@ class SkillEditFragment : BaseFragment() {
                         price = BigDecimal(price?.text.toString())
                     ),
                     viewModel.registrationState.value?.id?.accountNumber
+                )
+            },
+            onError = {
+                showToast(it.message ?: "Unknown Error")
+            }
+        )
+            .invokeOnCompletion { activity?.supportFragmentManager?.popBackStack() }
+    }
+
+    private fun editSkill(skill: Skill) {
+        require(title?.text.toString().isNotBlank()) { showToast(message = "Fill title field!") }
+        viewLifecycleOwner.lifecycleScope.launchIO(
+            action = {
+                RetrofitModule.skillApi.updateSkill(
+                    Skill(
+                        name = title?.text.toString(),
+                        level = Level.valueOf(level?.selectedItem.toString()),
+                        price = BigDecimal(price?.text.toString())
+                    ),
+                    skill.id!!
                 )
             },
             onError = {

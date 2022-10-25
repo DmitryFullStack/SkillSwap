@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -17,6 +19,7 @@ import ru.kirilin.skillswap.R
 import ru.kirilin.skillswap.ui.adapter.RequirementAdapter
 import ru.kirilin.skillswap.ui.adapter.SkillAdapter
 import ru.kirilin.skillswap.ui.viewmodel.*
+
 
 class MainFragment(
     val mainViewModel: MainViewModel,
@@ -94,7 +97,8 @@ class MainFragment(
     }
 
     private fun setSkillAdapter(recyclerView: RecyclerView) {
-        skillAdapter = SkillAdapter()
+
+        skillAdapter = SkillAdapter(activity)
         skillViewModel = ViewModelProvider(this, SkillViewModelFactory(accountId))
             .get(SkillViewModel::class.java)
         skillViewModel.skillData.observe(this.viewLifecycleOwner) {
@@ -106,6 +110,29 @@ class MainFragment(
         recyclerView.addItemDecoration(
             DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
 
+        object : ItemTouchHelper.SimpleCallback(
+                0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or ItemTouchHelper.DOWN or ItemTouchHelper.UP
+            ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                Toast.makeText(activity, "on Move", Toast.LENGTH_SHORT).show()
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                Toast.makeText(activity, "on Swiped ", Toast.LENGTH_SHORT).show()
+                //Remove swiped item from list and notify the RecyclerView
+                val position = viewHolder.adapterPosition
+                skillViewModel.skillData.value?.toMutableList()?.removeAt(position)
+            }
+        }.also {
+            val itemTouchHelper = ItemTouchHelper(it)
+            itemTouchHelper.attachToRecyclerView(recyclerView)
+        }
         recyclerView.adapter = skillAdapter
     }
 
