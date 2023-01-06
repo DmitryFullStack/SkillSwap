@@ -6,7 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ru.kirilin.skillswap.config.launchIO
+import ru.kirilin.skillswap.config.withMain
+import ru.kirilin.skillswap.data.model.RetrofitModule
 import ru.kirilin.skillswap.data.model.User
+import java.util.*
 
 class MainViewModel(user: User) : ViewModel() {
     private val _mutableUserState = MutableLiveData(user)
@@ -17,7 +21,21 @@ class MainViewModel(user: User) : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
 
             _mutableUserState.value = user
-            }
         }
+    }
 
+    fun updateUserLogo(logoId: UUID) =
+        viewModelScope.launchIO(
+            action = {
+                RetrofitModule.userApi.updateUser(
+                    _mutableUserState.value?.apply {
+                        this.logoId = logoId
+                    }!!
+                )
+                withMain {
+                    _mutableUserState.postValue(_mutableUserState.value)
+                }
+            },
+            onError = {}
+        )
 }

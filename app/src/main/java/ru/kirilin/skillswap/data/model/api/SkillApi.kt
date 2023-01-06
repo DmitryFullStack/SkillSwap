@@ -1,6 +1,7 @@
-package ru.kirilin.skillswap.data.model
+package ru.kirilin.skillswap.data.model.api
 
 import retrofit2.http.*
+import ru.kirilin.skillswap.data.model.Skill
 import java.util.*
 
 interface SkillApi {
@@ -20,6 +21,10 @@ interface SkillApi {
     suspend fun updateSkill(
         @Body skill: Skill,
         @Path("id") id: UUID): Skill
+
+    @DELETE("/v1/skills/{id}")
+    suspend fun removeSkill(
+        @Path("id") id: UUID): Int
 
 //    @GET("/v1/skills/{id}")
 //    suspend fun getSkillById(@Path("id") id: UUID): Skill?

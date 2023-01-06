@@ -1,23 +1,23 @@
 package ru.kirilin.skillswap.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import ru.kirilin.skillswap.R
 import ru.kirilin.skillswap.config.launchIO
-import ru.kirilin.skillswap.data.model.*
+import ru.kirilin.skillswap.data.model.Gender
+import ru.kirilin.skillswap.data.model.Requirement
+import ru.kirilin.skillswap.data.model.RetrofitModule
 import ru.kirilin.skillswap.ui.viewmodel.MainViewModel
-import java.math.BigDecimal
 
 
-class RequirementEditFragment : BaseFragment() {
+class RequirementEditFragment(private val requirement: Requirement? = null) : BaseFragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
     var name: EditText? = null
@@ -40,11 +40,12 @@ class RequirementEditFragment : BaseFragment() {
 
         description = view.findViewById(R.id.req_description)
         addBtn = view.findViewById<Button?>(R.id.add_req_btn)
-        addBtn?.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                addRequirement()
+        addBtn?.setOnClickListener {
+            when {
+                requirement == null -> addRequirement()
+                else -> editRequirement(requirement!!)
             }
-        })
+        }
     }
 
     private fun addRequirement() {
@@ -59,6 +60,27 @@ class RequirementEditFragment : BaseFragment() {
                         gender = Gender.valueOf(gender?.selectedItem.toString())
                     ),
                     viewModel.registrationState.value?.id?.accountNumber
+                )
+            },
+            onError = {
+                showToast(it.message ?: "Unknown Error")
+            }
+        )
+            .invokeOnCompletion { activity?.supportFragmentManager?.popBackStack() }
+    }
+
+    private fun editRequirement(requirement: Requirement) {
+        require(name?.text.toString().isNotBlank()) { showToast(message = "Fill title field!") }
+        viewLifecycleOwner.lifecycleScope.launchIO(
+            action = {
+                RetrofitModule.requirementApi.updateRequirements(
+                    Requirement(
+                        name = name?.text.toString(),
+                        description = description?.text.toString(),
+                        minExperience = experience?.selectedItem.toString().toInt(),
+                        gender = Gender.valueOf(gender?.selectedItem.toString())
+                    ),
+                    requirement.id!!
                 )
             },
             onError = {

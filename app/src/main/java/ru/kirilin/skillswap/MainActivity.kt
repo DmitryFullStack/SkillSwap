@@ -116,7 +116,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            val user = runBlocking { RetrofitModule.userApi.createNewUser(createUserFromAccount(account))}
+            val user = runBlocking { RetrofitModule.userApi
+                .createNewUser(
+                    createUserFromAccount(account)
+                )}
             // Signed in successfully, show authenticated UI.
             startMainFragment(user, account.id!!)
         } catch (e: ApiException) {

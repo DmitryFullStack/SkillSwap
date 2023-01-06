@@ -1,9 +1,7 @@
 package ru.kirilin.skillswap.data.model
 
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
+import java.util.*
 
 interface RequirementApi {
 
@@ -17,5 +15,15 @@ interface RequirementApi {
     suspend fun getAllMyRequirements(
         @Query("id") id: String,
         @Query("accountType") accountType: String = "GOOGLE"): List<Requirement>
+
+    @PUT("/v1/requirements/{id}")
+    suspend fun updateRequirements(
+        @Body req: Requirement,
+        @Path("id") id: UUID): Requirement
+
+    @DELETE("/v1/requirements/{id}")
+    suspend fun removeRequirementById(
+        @Path("id") id: UUID
+    ): Int
 
 }

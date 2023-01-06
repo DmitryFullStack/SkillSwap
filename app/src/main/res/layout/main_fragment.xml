@@ -39,9 +39,14 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="52dp"
-        android:layout_height="55dp"
+        android:layout_width="88dp"
+        android:layout_height="91dp"
+        android:adjustViewBounds="true"
+        android:clickable="true"
+        android:contentDescription="logo image"
+        android:focusable="true"
         android:gravity="center"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_cat_placeholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/age"

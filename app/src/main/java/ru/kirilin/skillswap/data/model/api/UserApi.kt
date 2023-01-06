@@ -1,6 +1,7 @@
-package ru.kirilin.skillswap.data.model
+package ru.kirilin.skillswap.data.model.api
 
 import retrofit2.http.*
+import ru.kirilin.skillswap.data.model.User
 
 interface UserApi {
     @POST("/v1/users")
@@ -8,6 +9,9 @@ interface UserApi {
 
     @POST("/v1/users")
     suspend fun createNewUser(@Body user: User): User
+
+    @PUT("/v1/users")
+    suspend fun updateUser(@Body user: User): User
 
     @GET("/v1/users/{id}")
     suspend fun getUserById(

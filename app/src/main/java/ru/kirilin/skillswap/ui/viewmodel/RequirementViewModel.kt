@@ -11,7 +11,6 @@ import ru.kirilin.skillswap.config.launchIO
 import ru.kirilin.skillswap.config.withMain
 import ru.kirilin.skillswap.data.model.Requirement
 import ru.kirilin.skillswap.data.model.RetrofitModule
-import ru.kirilin.skillswap.data.model.Skill
 
 class RequirementViewModel(val accountId: String) : ViewModel() {
     private val requirementLiveData = MutableLiveData(onLoad())
@@ -19,14 +18,37 @@ class RequirementViewModel(val accountId: String) : ViewModel() {
     val requirementData: LiveData<List<Requirement>> get() = requirementLiveData
 
     fun onLoad() =
-        runBlocking (Dispatchers.IO) {
+        runBlocking(Dispatchers.IO) {
             loadRequirements()
         }
 
-    private suspend fun loadRequirements() = RetrofitModule.requirementApi.getAllMyRequirements(accountId)
-        .sortedWith(
-            compareByDescending<Requirement> { it.name }
-                .thenByDescending { it.minExperience })
+    fun refresh() =
+        uiScope.launchIO(
+            action = {
+                val newRequirements = loadRequirements()
+                withMain { requirementLiveData.value = newRequirements }
+            },
+            onError = {}
+        )
+
+    fun removeRequirement(position: Int) =
+        uiScope.launchIO(
+            action = {
+                removeRequirement(requirementLiveData.value?.get(position)!!)
+                val list = requirementLiveData.value?.toMutableList()
+                list?.removeAt(position)
+                withMain {
+                    requirementLiveData.value = list
+                }
+            },
+            onError = {}
+        )
+
+    private suspend fun loadRequirements() =
+        RetrofitModule.requirementApi.getAllMyRequirements(accountId)
+            .sortedWith(
+                compareByDescending<Requirement> { it.name }
+                    .thenByDescending { it.minExperience })
 
     private val viewModelJob = SupervisorJob()
 
@@ -37,12 +59,6 @@ class RequirementViewModel(val accountId: String) : ViewModel() {
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    fun refresh() =
-        uiScope.launchIO(
-            action = {
-                val newRequirements = loadRequirements()
-                withMain { requirementLiveData.value = newRequirements }
-                     },
-            onError = {}
-        )
+    private suspend fun removeRequirement(requirement: Requirement) =
+        RetrofitModule.requirementApi.removeRequirementById(requirement.id!!)
 }

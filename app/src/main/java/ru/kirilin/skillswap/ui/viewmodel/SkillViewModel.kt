@@ -22,12 +22,6 @@ class SkillViewModel(val accountId: String) : ViewModel() {
             loadSkills()
         }
 
-    private suspend fun loadSkills() = RetrofitModule.skillApi.getAllMySkills(accountId)
-        .sortedWith(
-            compareByDescending<Skill> { it.level }
-                .thenByDescending { it.experience }
-                .thenBy { it.name })
-
     private val viewModelJob = SupervisorJob()
 
     /**
@@ -45,4 +39,27 @@ class SkillViewModel(val accountId: String) : ViewModel() {
                      },
             onError = {}
         )
+
+    fun removeSkill(position: Int) =
+        uiScope.launchIO(
+            action = {
+                removeSkills(skillLiveData.value?.get(position)!!)
+                val list = skillLiveData.value?.toMutableList()
+                list?.removeAt(position)
+                withMain {
+                    skillLiveData.value = list
+                }
+            },
+            onError = {}
+        )
+
+
+    private suspend fun loadSkills() = RetrofitModule.skillApi.getAllMySkills(accountId)
+        .sortedWith(
+            compareByDescending<Skill> { it.level }
+                .thenByDescending { it.experience }
+                .thenBy { it.name })
+
+    private suspend fun removeSkills(skill: Skill) =
+        RetrofitModule.skillApi.removeSkill(skill.id!!)
 }

@@ -41,6 +41,9 @@ class SkillEditFragment(var skill: Skill? = null) : BaseFragment() {
 
         price = view.findViewById(R.id.skill_edit_price)
         addBtn = view.findViewById(R.id.add_skill_btn)
+        if(skill != null){
+            addBtn?.setText(R.string.action_Edit)
+        }
 
         fillWhenEditing()
 
@@ -69,7 +72,8 @@ class SkillEditFragment(var skill: Skill? = null) : BaseFragment() {
                     Skill(
                         name = title?.text.toString(),
                         level = Level.valueOf(level?.selectedItem.toString()),
-                        price = BigDecimal(price?.text.toString())
+                        price = BigDecimal(price?.text.toString()),
+                        experience = experience?.selectedItem.toString().toInt()
                     ),
                     viewModel.registrationState.value?.id?.accountNumber
                 )

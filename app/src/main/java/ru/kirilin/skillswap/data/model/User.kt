@@ -1,6 +1,8 @@
 package ru.kirilin.skillswap.data.model
 
 import kotlinx.serialization.Serializable
+import ru.kirilin.skillswap.config.UUIDSerializer
+import java.util.*
 
 @Serializable
 data class User(
@@ -8,7 +10,8 @@ data class User(
     val age: Int? = null,
     val gender: String? = null,
     val name: String?,
-    val logo: String? = null,
+    @Serializable(with = UUIDSerializer::class)
+    var logoId: UUID? = null,
     var id: UserId? = null
 )
 

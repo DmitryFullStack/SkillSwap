@@ -6,6 +6,9 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import ru.kirilin.skillswap.data.model.api.FileApi
+import ru.kirilin.skillswap.data.model.api.SkillApi
+import ru.kirilin.skillswap.data.model.api.UserApi
 import ru.kirilin.skillswap.ui.fragment.BaseFragment
 
 object RetrofitModule {
@@ -33,6 +36,7 @@ object RetrofitModule {
     val userApi: UserApi = retrofit.create(UserApi::class.java)
     val skillApi: SkillApi = retrofit.create(SkillApi::class.java)
     val requirementApi: RequirementApi = retrofit.create(RequirementApi::class.java)
+    val fileApi: FileApi = retrofit.create(FileApi::class.java)
 
 //    fun create(userToken: String? = null): Retrofit{
 //        if(retrofitInstance == null){

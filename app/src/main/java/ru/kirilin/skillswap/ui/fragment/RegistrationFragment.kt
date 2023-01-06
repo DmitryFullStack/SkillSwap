@@ -63,7 +63,10 @@ class RegistrationFragment(var viewModel: RegistrationViewModel) : BaseFragment(
             if(username?.text?.isNotBlank() == true &&
                 text?.isNotBlank() == true &&
                    password?.text.toString() == text.toString() ){
-                viewModel.register(username?.text.toString(), password?.text.toString(), text.toString())
+                viewModel.register(
+                    username?.text.toString(),
+                    password?.text.toString(),
+                    text.toString())
             }
         }
     }
@@ -90,19 +93,6 @@ class RegistrationFragment(var viewModel: RegistrationViewModel) : BaseFragment(
             Log.e(TAG, "Cannot send data to server!", ex)
             return
         }
-//        call.enqueue(object : Callback<User?> {
-//            override fun onResponse(call: Call<User?>, response: Response<User?>) {
-//                user = response.body()
-//            }
-//
-//            override fun onFailure(call: Call<User?>, t: Throwable) {
-//                Toast.makeText(context, "Cannot send data to server!", Toast.LENGTH_LONG).show()
-//                return
-//            }
-//        })
-
-        val activity = activity as MainActivity
-//        activity.startMainFragment()
     }
 
 
